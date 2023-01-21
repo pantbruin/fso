@@ -16,6 +16,7 @@ const Total = ({ parts }) => {
 }
 
 
+
 const Course = (props) => {
   return (
     <div>
