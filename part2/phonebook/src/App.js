@@ -2,31 +2,46 @@ import { useState } from 'react'
 import PhoneInformation from './components/PhoneInformation'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
-  const [newName, setNewName] = useState('')
+  const [persons, setPersons] = useState([]);
 
-  const handleNewName = (event) => {
-    setNewName(event.target.value);
+  {/* newInput controls the form's input fields current value */ }
+  const [newInput, setNewInput] = useState({
+     name: '',
+     phone: ''
+  })
+
+  {/* handleNewInput is an event handler that gets executed every time any of the input fields
+    of the form change. When the input field changes, the current value of the field gets stored in the newInput object state/hook */ }
+  const handleNewInput = (event) => {
+    const updatedState = {...newInput};
+    updatedState[event.target.name] = event.target.value;
+
+    setNewInput(updatedState);
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const personExists = persons.some((element) => element.name === newName)
-
-    if (personExists) {
-      alert(`${newName} is already added to the phonebook`)
-      setNewName('');
+    const personExistsInPhoneBook = persons.some((element) => element.name === newInput.name)
+    if (personExistsInPhoneBook) {
+      alert(`${newInput.name} is already added to the phonebook`)
+      setNewInput({
+        ...newInput,
+        name: ''
+      });
       return;
-    }
 
-    const newPerson = {
-      name: newName,
+    } else {
+      const newPerson = {
+        name: newInput.name,
+        number: newInput.number
+      }
+      setPersons(persons.concat(newPerson));
+      setNewInput({
+        name: '',
+        number: ''
+      });
     }
-    setPersons(persons.concat(newPerson));
-    setNewName('');
   }
 
   return (
@@ -34,7 +49,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          name: <input value={newName} onChange={handleNewName}/>
+          name: <input name='name' value={newInput.name} onChange={handleNewInput}/>
+        </div>
+        <div>
+          number: <input name='number' value={newInput.number} onChange={handleNewInput}/>
         </div>
         <div>
           <button type="submit">add</button>

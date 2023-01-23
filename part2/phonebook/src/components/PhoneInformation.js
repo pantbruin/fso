@@ -1,14 +1,19 @@
-const Row = ({ name }) => {
+const Row = ({ person }) => {
 
     return (
     <tr>
-        <td>{name}</td>
+        <td>{person.name}</td>
+        <td>{person.number}</td>
     </tr>
     )
 }
 
 const PhoneInformation = ({ persons }) => {
-    const rows = persons.map((element) => <Row key={element.name} name={element.name} />)
+    
+    const rows = persons.map((person) => <Row key={person.name} person={person} />)
+
+    if (rows.length === 0) return <p>The phonebook is empty!</p>;
+
     return (
         <div>
             <table>
