@@ -4,6 +4,9 @@ import PhoneInformation from './components/PhoneInformation'
 const App = () => {
   const [persons, setPersons] = useState([]);
 
+  {/* newInput controls the search input field's current value */ }
+  const [searchInput, setSearchInput] = useState('');
+
   {/* newInput controls the form's input fields current value */ }
   const [newInput, setNewInput] = useState({
      name: '',
@@ -44,9 +47,17 @@ const App = () => {
     }
   }
 
+  const handleSearch = (event) => {
+    setSearchInput(event.target.value);
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+          filter numbers by name: <input value={searchInput} onChange={handleSearch}/>
+        </div>
+      <h2>Add a new person to phonebook</h2>
       <form onSubmit={handleSubmit}>
         <div>
           name: <input name='name' value={newInput.name} onChange={handleNewInput}/>
@@ -59,7 +70,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <PhoneInformation persons={persons} />
+      <PhoneInformation persons={persons} searchInput={searchInput} />
     </div>
   )
 }
