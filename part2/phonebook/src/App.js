@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PhoneInformation from './components/PhoneInformation';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
+import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,8 +13,14 @@ const App = () => {
   {/* newInput controls the form's input fields current value */ }
   const [newInput, setNewInput] = useState({
      name: '',
-     phone: ''
+     number: ''
   })
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then((res) => setPersons(res.data))
+  }, [])
 
   {/* handleNewInput is an event handler that gets executed every time any of the input fields
     of the form change. When the input field changes, the current value of the field gets stored in the newInput object state/hook */ }

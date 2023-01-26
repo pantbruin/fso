@@ -27,7 +27,9 @@ const PhoneInformation = (props) => {
     return (
         <div>
             <table>
-                {rows}
+                <tbody>
+                    {rows}
+                </tbody>
             </table>
         </div>
     )
