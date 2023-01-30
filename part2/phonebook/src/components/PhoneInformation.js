@@ -1,9 +1,10 @@
-const Row = ({ person }) => {
+const Row = ({ person, handleDelete }) => {
 
     return (
     <tr>
         <td>{person.name}</td>
         <td>{person.number}</td>
+        <td><button onClick={() => {handleDelete(person)}}>remove</button></td>
     </tr>
     )
 }
@@ -20,7 +21,7 @@ const PhoneInformation = (props) => {
         })
     }
 
-    const rows = persons.map((person) => <Row key={person.name} person={person} />)
+    const rows = persons.map((person) => <Row key={person.name} person={person} handleDelete={props.handleDelete}/>)
 
     if (rows.length === 0) return <p>No entries found!</p>;
 
