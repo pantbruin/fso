@@ -36,24 +36,31 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const personExistsInPhoneBook = persons.some((element) => element.name === newInput.name)
-    if (personExistsInPhoneBook) {
-      alert(`${newInput.name} is already added to the phonebook`)
-      setNewInput({
-        ...newInput,
-        name: ''
-      });
-      return;
+    const newPerson = {
+      name: newInput.name,
+      number: newInput.number
+    }
 
-    } else {
-      const newPerson = {
-        name: newInput.name,
-        number: newInput.number
+    // If the person already exists in the phone book, then we should confirm if the client wants to update the phone number
+    const foundPerson = persons.find(element => element.name === newInput.name);
+
+    if (foundPerson) {
+      if(!(window.confirm(`${newInput.name} is already added to the phonebook, replace the old number with the new one?`))) {
+        setNewInput({
+          ...newInput,
+          name: ''
+        });
+        return;
       }
 
-      // Add user to database
-      personsService.create(newPerson)
-        .then(person => setPersons(persons.concat(person)))
+      // PUT request
+      const id = foundPerson.id;
+      personsService.update(id, newPerson)
+        .then(responseData => {
+          setPersons(persons.map(ele => {
+            return ele.id !== responseData.id ? ele : responseData
+          }))
+        })
         .then(() => {
           // Clear the controlled input fields
           setNewInput({
@@ -61,7 +68,22 @@ const App = () => {
             number: ''
           });
         })
-    }
+
+    } else {
+
+      // POST request
+      personsService.create(newPerson)
+      .then(person => setPersons(persons.concat(person)))
+      .then(() => {
+        // Clear the controlled input fields
+        setNewInput({
+          name: '',
+          number: ''
+        });
+      })
+      }
+
+
   }
 
   const handleSearch = (event) => {
