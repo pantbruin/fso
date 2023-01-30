@@ -1,8 +1,10 @@
+/* eslint-disable no-lone-blocks */
 import { useState, useEffect } from 'react'
 import PhoneInformation from './components/PhoneInformation';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import axios from 'axios'
+import personsService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -31,6 +33,8 @@ const App = () => {
     setNewInput(updatedState);
   }
 
+  {/* handleNewInput is an event handler that gets executed every time the user submits a new name and phone number to add
+  to the phone book. A new name should only be added if it doesn't already exist. This is verified by checking the persons state variable */ }
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -48,11 +52,17 @@ const App = () => {
         name: newInput.name,
         number: newInput.number
       }
-      setPersons(persons.concat(newPerson));
-      setNewInput({
-        name: '',
-        number: ''
-      });
+
+      // Add user to database
+      personsService.create(newPerson)
+        .then(person => setPersons(persons.concat(person)))
+        .then(() => {
+          // Clear the controlled input fields
+          setNewInput({
+            name: '',
+            number: ''
+          });
+        })
     }
   }
 
