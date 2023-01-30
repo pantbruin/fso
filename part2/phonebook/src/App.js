@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import PhoneInformation from './components/PhoneInformation';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
-import axios from 'axios'
 import personsService from './services/persons'
 
 const App = () => {
@@ -19,9 +18,8 @@ const App = () => {
   })
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((res) => setPersons(res.data))
+    personsService.getAll()
+      .then(persons => setPersons(persons))
   }, [])
 
   {/* handleNewInput is an event handler that gets executed every time any of the input fields
