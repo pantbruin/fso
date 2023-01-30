@@ -17,7 +17,7 @@ const PhoneInformation = (props) => {
     to include only the persons that includes the substring of the search string */}
     if (props.searchInput.length !== 0){ 
         persons = persons.filter((person) => {
-            return person.name.includes(props.searchInput)
+            return person.name.toLowerCase().includes(props.searchInput)
         })
     }
 
