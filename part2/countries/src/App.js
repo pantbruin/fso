@@ -16,7 +16,11 @@ function App() {
   }, [])
 
   const handleSearch = ({ target }) => {
-    setSearchQuery(target.value);
+    setSearchQuery(target.value.toLowerCase());
+  }
+
+  const handleShow = (countryObject) => {
+    setSearchQuery(countryObject.name.common.toLowerCase())
   }
 
   // Wait until useEffect runs for the first time 
@@ -25,7 +29,7 @@ function App() {
   return (
     <div className="App">
     <SearchBar handleSearch={handleSearch}/>
-    <Countries countryData={countryData} searchQuery={searchQuery}/>
+    <Countries countryData={countryData} searchQuery={searchQuery} handleShow={handleShow}/>
     </div>
   );
 }
