@@ -1,7 +1,19 @@
-const Notification = ({ message }) => {
+const Notification = ({ message, code }) => {
+
+    let output;
 
     const successStyle = {
         color: 'green',
+        background: 'lightgrey',
+        fontSize: 20,
+        borderStyle: 'solid',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10      
+    }
+
+    const errorStyle = {
+        color: 'red',
         background: 'lightgrey',
         fontSize: 20,
         borderStyle: 'solid',
@@ -14,11 +26,20 @@ const Notification = ({ message }) => {
         return null;
     }
 
-    return(
-        <div style={successStyle}>
-            {message}
-        </div>
-    )
+    if (message.includes('success')){
+        return (
+            <div style={successStyle}>
+                {message}
+            </div>
+        )
+    } else {
+        return (
+            <div style={errorStyle}>
+                {message}
+            </div>
+        )
+    }
+
 }
 
 export default Notification;

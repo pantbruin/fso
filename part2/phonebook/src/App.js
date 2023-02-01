@@ -69,7 +69,7 @@ const App = () => {
         })
         .then((responseData) => {
           // Display notification message by setting the state.
-          setNotificationMessage(`${responseData.name}'s number was successfully updated`)
+          setNotificationMessage(`${responseData.name}'s number was successfully updated`);
           
           // Set a timer to clear the notification message after 5 seconds
           setTimeout(() => {
@@ -82,6 +82,23 @@ const App = () => {
             name: '',
             number: ''
           });
+        })
+        .catch((error) => {
+          setNotificationMessage(`${foundPerson.name} has already been removed from the server`);
+
+          // Clear the controlled input field
+          setNewInput({
+            name: '',
+            number: ''
+          });
+
+          // Set a timer to clear the notification message after 5 seconds
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+
+          // re-render the component
+          setPersons(persons.filter( element => element.id !== foundPerson.id))
         })
 
     } else {
