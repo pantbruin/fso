@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import PhoneInformation from './components/PhoneInformation';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
+import Notification from './components/Notification';
+
 import personsService from './services/persons'
 
 const App = () => {
@@ -16,6 +18,8 @@ const App = () => {
      name: '',
      number: ''
   })
+
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     personsService.getAll()
@@ -46,6 +50,7 @@ const App = () => {
 
     if (foundPerson) {
       if(!(window.confirm(`${newInput.name} is already added to the phonebook, replace the old number with the new one?`))) {
+        // User cancelled update, reset input fields and return
         setNewInput({
           ...newInput,
           name: ''
@@ -53,13 +58,23 @@ const App = () => {
         return;
       }
 
-      // PUT request
+      // User is choosing to update existing persons number, execute PUT request
       const id = foundPerson.id;
       personsService.update(id, newPerson)
         .then(responseData => {
           setPersons(persons.map(ele => {
             return ele.id !== responseData.id ? ele : responseData
           }))
+          return responseData;
+        })
+        .then((responseData) => {
+          // Display notification message by setting the state.
+          setNotificationMessage(`${responseData.name}'s number was successfully updated`)
+          
+          // Set a timer to clear the notification message after 5 seconds
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
         })
         .then(() => {
           // Clear the controlled input fields
@@ -73,14 +88,24 @@ const App = () => {
 
       // POST request
       personsService.create(newPerson)
-      .then(person => setPersons(persons.concat(person)))
-      .then(() => {
-        // Clear the controlled input fields
-        setNewInput({
-          name: '',
-          number: ''
-        });
-      })
+        .then(response => {
+          setPersons(persons.concat(response))
+          return response;
+        })
+        .then((response) => {
+          setNotificationMessage(`${response.name} successfully added`)
+
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000)
+        })
+        .then(() => {
+          // Clear the controlled input fields
+          setNewInput({
+            name: '',
+            number: ''
+          });
+        })
       }
 
 
@@ -101,7 +126,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={notificationMessage} />
       <Filter value={searchInput} eventHandler={handleSearch}/>
       <h2>Add a new person to phonebook</h2>
       <PersonForm name={newInput.name} number={newInput.number} handleNewInput={handleNewInput} handleSubmit={handleSubmit} />
