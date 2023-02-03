@@ -26,9 +26,11 @@ const phonebook = [
 ];
 
 const app = express();
-
-app.use(morgan('tiny'))
 app.use(express.json());
+
+
+morgan.token('req-data', (req, res) =>  JSON.stringify(req.body));
+//app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-data'))
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -56,7 +58,7 @@ app.get('/api/persons', (req, res) => {
     res.json(phonebook);
   })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :req-data'),(req, res) => {
 
   const { name, number } = req.body;
 
