@@ -37,7 +37,17 @@ app.get('/api/persons/:id', (req, res) => {
 
   res.json(person);
 
-}) 
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const index = phonebook.findIndex(person => person.id === id);
+
+  if (index === -1) return res.status(404).end();
+
+  phonebook.splice(index, 1);
+  res.status(204).end();
+})
 
 app.get('/api/persons', (req, res) => {
     res.json(phonebook);
