@@ -55,11 +55,16 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
 
+  const { name, number } = req.body;
+
+  // Error handling
+  if (name === undefined || number === undefined) return res.status(400).json({error: "must include name and number in request body"})
+  if(phonebook.find(element => element.name.toLowerCase() === name.toLowerCase())) return res.status(400).json({error: "name must be unique"})
+
   const id = phonebook.length > 0
     ? Math.max(...phonebook.map(n => n.id)) + 1
     : 0
   
-  const { name, number } = req.body;
   const newPerson = { id, name, number }
 
   phonebook.push(newPerson);
