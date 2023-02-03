@@ -25,7 +25,10 @@ const SingleCountry = ({ countryObject }) => {
                 {languages}
             </ul>
             <img src={countryObject.flags.png} alt='flag'/>
+<<<<<<< HEAD
             <Weather countryObject={countryObject} />
+=======
+>>>>>>> e62fcea847027e4b1d933c16729fd3c56af2b9a0
         </div>
     )
 }
