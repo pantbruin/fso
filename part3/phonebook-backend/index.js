@@ -1,7 +1,6 @@
 const PORT = 3001;
 const express = require('express');
 
-
 const phonebook = [
     { 
       "id": 1,
@@ -26,6 +25,7 @@ const phonebook = [
 ];
 
 const app = express();
+app.use(express.json());
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -52,6 +52,19 @@ app.delete('/api/persons/:id', (req, res) => {
 app.get('/api/persons', (req, res) => {
     res.json(phonebook);
   })
+
+app.post('/api/persons', (req, res) => {
+
+  const id = phonebook.length > 0
+    ? Math.max(...phonebook.map(n => n.id)) + 1
+    : 0
+  
+  const { name, number } = req.body;
+  const newPerson = { id, name, number }
+
+  phonebook.push(newPerson);
+  res.json(newPerson);
+})
 
 app.get('/info', (req, res) => {
     const date = new Date();
