@@ -1,4 +1,5 @@
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+
 const express = require('express');
 const morgan = require('morgan');
 
@@ -26,6 +27,7 @@ const phonebook = [
 ];
 
 const app = express();
+app.use(express.static('build'))
 app.use(express.json());
 
 
@@ -85,5 +87,5 @@ app.get('/info', (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`)
 })
