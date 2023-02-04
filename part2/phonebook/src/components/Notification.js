@@ -1,6 +1,4 @@
-const Notification = ({ message, code }) => {
-
-    let output;
+const Notification = ({ message }) => {
 
     const successStyle = {
         color: 'green',

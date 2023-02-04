@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = '/api/persons'
 
 const getAll = () => {
     return (
@@ -34,5 +34,12 @@ const update = (id, data) => {
     )
 }
 
+const exports = {
+    create,
+    getAll,
+    deletePerson,
+    update,
+    getOne
+};
 
-export default { create, getAll, deletePerson, update }
+export default exports;
