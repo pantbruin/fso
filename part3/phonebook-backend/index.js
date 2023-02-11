@@ -62,22 +62,20 @@ app.get('/api/persons', (req, res, next) => {
       .catch(error => next(error))
   })
 
-app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :req-data'), async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
 
   const { name, number } = req.body;
-
-  // Error handling
-  if (name === undefined || number === undefined) return res.status(400).json({error: "must include name and number in request body"})
-  // if(phonebook.find(element => element.name.toLowerCase() === name.toLowerCase())) return res.status(400).json({error: "name must be unique"})
 
   const newPerson = new Person({
     name,
     number
   });
 
-  const result = await newPerson.save();
-  res.json(result);
-})
+  newPerson
+    .save()
+    .then(saveResult => res.status(201).json(saveResult))
+    .catch(error => next(error));
+});
 
 app.get('/info', (req, res, next) => {
 
@@ -115,6 +113,10 @@ app.use((error, req, res, next) => {
   switch (error.name) {
     case 'CastError':
       res.status(400).json({'error': 'malformatted id in request'});
+      break;
+    
+    case 'ValidationError':
+      res.status(400).json({error: error.message});
       break;
   
     default:

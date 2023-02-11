@@ -123,6 +123,13 @@ const App = () => {
             number: ''
           });
         })
+        .catch(error => {
+          setNotificationMessage(error.response.data.error);
+
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000)
+        })
       }
 
 
