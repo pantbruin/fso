@@ -58,25 +58,24 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.get('/api/persons', async (req, res) => {
     const phonebook = await Person.find({});
-    res.json(phonebook);
+    res.status(200).json(phonebook);
   })
 
-app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :req-data'),(req, res) => {
+app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :req-data'), async (req, res) => {
 
   const { name, number } = req.body;
 
   // Error handling
   if (name === undefined || number === undefined) return res.status(400).json({error: "must include name and number in request body"})
-  if(phonebook.find(element => element.name.toLowerCase() === name.toLowerCase())) return res.status(400).json({error: "name must be unique"})
+  // if(phonebook.find(element => element.name.toLowerCase() === name.toLowerCase())) return res.status(400).json({error: "name must be unique"})
 
-  const id = phonebook.length > 0
-    ? Math.max(...phonebook.map(n => n.id)) + 1
-    : 0
-  
-  const newPerson = { id, name, number }
+  const newPerson = new Person({
+    name,
+    number
+  });
 
-  phonebook.push(newPerson);
-  res.json(newPerson);
+  const result = await newPerson.save();
+  res.json(result);
 })
 
 app.get('/info', (req, res) => {
