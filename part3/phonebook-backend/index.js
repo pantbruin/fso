@@ -35,14 +35,16 @@ morgan.token('req-data', (req, res) =>  JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-data'))
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = phonebook.find(person => person.id === id);
 
-  if (!person){
-    return res.status(404).end();
-  }
-
-  res.json(person);
+  Person.findById(req.params.id)
+    .then(result => {
+      console.log(result);
+      if (!result) {
+        return res.status(404).end();
+      }
+      res.status(200).json(result);
+    })
+    .catch(error => next(error));
 
 })
 
@@ -54,9 +56,10 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.get('/api/persons', async (req, res) => {
-    const phonebook = await Person.find({});
-    res.status(200).json(phonebook);
+app.get('/api/persons', (req, res, next) => {
+    Person.find({})
+      .then(result => res.status(200).json(result))
+      .catch(error => next(error))
   })
 
 app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :req-data'), async (req, res) => {
@@ -76,12 +79,18 @@ app.post('/api/persons', morgan(':method :url :status :res[content-length] - :re
   res.json(result);
 })
 
-app.get('/info', (req, res) => {
-    const date = new Date();
-    res.send(
-        `<p>Phonebook has info for ${phonebook.length} people</p>
-        <p>${date.toString()}<p>`
-    )
+app.get('/info', (req, res, next) => {
+
+    Person.countDocuments({})
+      .then(nDocuments => {
+        const date = new Date();
+        res.send(
+          `<p>Phonebook has info for ${nDocuments} people</p>
+          <p>${date.toString()}<p>`
+      )
+      })
+      .catch(error => next(error))
+
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
