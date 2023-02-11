@@ -84,7 +84,24 @@ app.get('/info', (req, res) => {
     )
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+  const {name, number} = req.body;
+  const id = req.params.id;
 
+  const updateOptions = {
+    new: true,
+  }
+
+  Person.findByIdAndUpdate(id, {name, number}, updateOptions)
+    .then(dbdata => {
+      res.status(200).json(dbdata)
+    })
+    .catch(error => next(error))
+
+
+})
+
+/* ERROR HANDLING MIDDLEWARE */
 app.use((error, req, res, next) => {
   switch (error.name) {
     case 'CastError':
@@ -92,7 +109,7 @@ app.use((error, req, res, next) => {
       break;
   
     default:
-      res.status(500).json({'error': 'internal server error'});
+      res.status(500).json(error);
   }
   return;
 })
