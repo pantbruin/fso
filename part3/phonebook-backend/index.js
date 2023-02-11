@@ -47,13 +47,14 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const index = phonebook.findIndex(person => person.id === id);
-
-  if (index === -1) return res.status(404).end();
-
-  phonebook.splice(index, 1);
-  res.status(204).end();
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end();
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({'error': 'Something went wrong, couldn\'t delete'});
+    })
 })
 
 app.get('/api/persons', async (req, res) => {
