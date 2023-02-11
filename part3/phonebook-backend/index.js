@@ -46,15 +46,12 @@ app.get('/api/persons/:id', (req, res) => {
 
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then(result => {
       res.status(204).end();
     })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({'error': 'Something went wrong, couldn\'t delete'});
-    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', async (req, res) => {
@@ -85,6 +82,19 @@ app.get('/info', (req, res) => {
         `<p>Phonebook has info for ${phonebook.length} people</p>
         <p>${date.toString()}<p>`
     )
+})
+
+
+app.use((error, req, res, next) => {
+  switch (error.name) {
+    case 'CastError':
+      res.status(400).json({'error': 'malformatted id in request'});
+      break;
+  
+    default:
+      res.status(500).json({'error': 'internal server error'});
+  }
+  return;
 })
 
 app.listen(process.env.PORT, () => {
