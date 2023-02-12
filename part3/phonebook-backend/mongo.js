@@ -10,9 +10,18 @@ mongoose.connect(url).then(() => console.log('Connected to db')).catch(console.l
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
-        minLength: 3
+        minLength: 3,
     },
-    number: String,
+    number: {
+        type: String,
+        minLength: 8,
+        validate: {
+            validator: function(val) {
+                return /[0-9]{3}[-][0-9]{3}[-][0-9]{4}/.test(val);
+              },
+              message: props => `${props.value} is not a valid phone number! Must be in the form`
+        }
+    }
 })
 
 personSchema.set('toJSON', {

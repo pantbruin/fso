@@ -3,29 +3,6 @@ const express = require('express');
 const morgan = require('morgan');
 const Person = require('./mongo');
 
-const phonebook = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-];
-
 const app = express();
 app.use(express.static('build'))
 app.use(express.json());
@@ -66,6 +43,9 @@ app.post('/api/persons', async (req, res, next) => {
 
   const { name, number } = req.body;
 
+  const foundMatchingName = await Person.findOne({name});
+  if (foundMatchingName) return res.status(400).json({error: 'Name already exists in DB'})
+
   const newPerson = new Person({
     name,
     number
@@ -97,6 +77,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 
   const updateOptions = {
     new: true,
+    runValidators: true,
   }
 
   Person.findByIdAndUpdate(id, {name, number}, updateOptions)
@@ -120,7 +101,7 @@ app.use((error, req, res, next) => {
       break;
   
     default:
-      res.status(500).json(error);
+      res.status(500).json({error: error.message});
   }
   return;
 })

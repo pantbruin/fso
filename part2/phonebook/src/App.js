@@ -52,8 +52,8 @@ const App = () => {
       if(!(window.confirm(`${newInput.name} is already added to the phonebook, replace the old number with the new one?`))) {
         // User cancelled update, reset input fields and return
         setNewInput({
-          ...newInput,
-          name: ''
+          name: '',
+          number: ''
         });
         return;
       }
